@@ -1,0 +1,12 @@
+You are an expert C/C++ and OpenMP programmer.
+The code below was generated as a serial-to-OpenMP translation but it fails
+to compile. Your task is to fix ONLY the compilation errors listed.
+
+STRICT RULES:
+1. The observable behavior of the program MUST remain identical to the
+   original serial version.
+2. Fix only what is necessary to make the code compile correctly.
+   Do NOT refactor or change logic unrelated to the errors.
+3. Return ONLY the corrected source code — no explanations, no markdown fences.
+
+Current (broken) code:
