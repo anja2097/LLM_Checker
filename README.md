@@ -1,4 +1,4 @@
-# OpenMP Translator
+# Serial to Parallel Translator
 
 Traductor automático de código C/C++ **serial** a versiones **paralelas** (OpenMP, Kokkos o MPI) mediante modelos de lenguaje accedidos vía [OpenRouter](https://openrouter.ai/). Compila, corrige errores de forma iterativa y verifica que la salida coincida con el programa original.
 
@@ -9,8 +9,6 @@ Traductor automático de código C/C++ **serial** a versiones **paralelas** (Ope
 ---
 
 ## 🖥️ Demo
-
-No hay capturas en el repositorio; el flujo principal es por CLI. Ejemplo de traducción a OpenMP:
 
 ```bash
 cd openmp_translator
@@ -281,24 +279,3 @@ El proyecto no usa `package.json` ni `Makefile`. Los puntos de entrada son:
 | `python main.py --list-backends` | Lista backends detectados en `prompts/` |
 | `python main.py --list-models` | Lista alias de modelos configurados |
 | `uv run main.py <fichero> [opciones]` | Alternativa si usas uv sin activar el venv |
-
----
-
-## 🤝 Contribución
-
-1. Haz fork del repositorio
-2. Crea una rama con tu cambio: `git checkout -b feature/mi-mejora`
-3. Realiza commits descriptivos (se recomienda [Conventional Commits](https://www.conventionalcommits.org/)):
-   - `feat:` nueva funcionalidad
-   - `fix:` corrección de bug
-   - `docs:` documentación
-   - `refactor:` cambio interno sin alterar comportamiento
-4. Abre un Pull Request describiendo el cambio y cómo probarlo
-
-Para añadir un nuevo backend, crea una carpeta en `prompts/<Nombre>/` con `translate.txt` y `fix_errors.txt`, e implementa la lógica de compilación/ejecución en `translator/infrastructure/compilation/` si el toolchain es distinto.
-
----
-
-## 📄 Licencia
-
-No se ha detectado un fichero `LICENSE` en el repositorio. Consulta con los mantenedores del proyecto antes de redistribuir o usar el código en entornos con restricciones de licencia.
