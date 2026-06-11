@@ -35,9 +35,15 @@ def _write_source(target_path: Path, code: str) -> None:
     print(f"  Fichero actualizado: {target_path}")
 
 
-def _on_compile_success(original_path: Path, backend: Backend, iteration: int) -> None:
+def _on_compile_success(
+    original_path: Path,
+    backend: Backend,
+    iteration: int,
+    *,
+    extra_flags: list[str] | None = None,
+) -> None:
     print(f"\n\nCompilado correctamente en la iteración {iteration}.")
-    verify_and_benchmark(original_path, backend)
+    verify_and_benchmark(original_path, backend, extra_flags=extra_flags)
 
 
 def translate_file(
@@ -48,6 +54,7 @@ def translate_file(
     model: str,
     thinking: bool = False,
     thinking_effort: str | None = None,
+    extra_flags: list[str] | None = None,
 ) -> None:
     """Traduce un fichero serial al backend indicado, corrigiendo errores de compilación."""
     translated_path = backend.translated_path(source_path)
@@ -79,9 +86,11 @@ def translate_file(
     translated_code = extract_content(data)
     _write_source(translated_path, translated_code)
 
-    ok, error_output = compile_file(translated_path, backend, variant="translated")
+    ok, error_output = compile_file(
+        translated_path, backend, variant="translated", extra_flags=extra_flags,
+    )
     if ok:
-        _on_compile_success(source_path, backend, 1)
+        _on_compile_success(source_path, backend, 1, extra_flags=extra_flags)
         return
 
     for iteration in range(2, MAX_RETRIES + 1):
@@ -103,9 +112,13 @@ def translate_file(
         translated_code = extract_content(data)
         _write_source(translated_path, translated_code)
 
-        ok, error_output = compile_file(translated_path, backend, variant="translated")
+        ok, error_output = compile_file(
+            translated_path, backend, variant="translated", extra_flags=extra_flags,
+        )
         if ok:
-            _on_compile_success(source_path, backend, iteration)
+            _on_compile_success(
+                source_path, backend, iteration, extra_flags=extra_flags,
+            )
             return
 
     print(f"\n\n[ERROR] No se pudo compilar tras {MAX_RETRIES} iteraciones. Último error:")

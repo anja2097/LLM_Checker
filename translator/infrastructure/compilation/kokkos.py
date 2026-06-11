@@ -45,8 +45,12 @@ def _kokkos_flags() -> tuple[str, list[str], list[str]]:
     sys.exit(1)
 
 
-def compile_kokkos(source_path: Path) -> tuple[bool, str]:
+def compile_kokkos(
+    source_path: Path,
+    extra_flags: list[str] | None = None,
+) -> tuple[bool, str]:
     cxx, cxxflags, ldflags = _kokkos_flags()
+    extra = extra_flags or []
     exe = executable_path(source_path)
-    cmd = [cxx, *cxxflags, str(source_path), "-o", str(exe), *ldflags]
+    cmd = [cxx, *cxxflags, *extra, str(source_path), "-o", str(exe), *ldflags]
     return run_compile(cmd, label="Kokkos")

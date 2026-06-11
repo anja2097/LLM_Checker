@@ -15,7 +15,7 @@ MODELS: dict[str, str] = {
     "gemma-4-31b": "google/gemma-4-31b-it:free",
 }
 
-DEFAULT_MODEL = "qwen3-coder"
+DEFAULT_MODEL = "gpt-oss-120b"
 DEFAULT_BACKEND_NAME = "OpenMP"
 
 THINKING_EFFORTS = ("minimal", "low", "medium", "high", "xhigh")

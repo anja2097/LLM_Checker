@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import shlex
 import sys
 from pathlib import Path
 
@@ -16,6 +17,11 @@ from translator.config.settings import (
 from translator.domain.backend import discover_backends, resolve_backend
 from translator.config.env import load_env
 from translator.services.translate import translate_file
+
+
+def parse_compile_flags(raw: str) -> list[str]:
+    """Convierte la cadena de --flags en tokens de compilación."""
+    return shlex.split(raw) if raw.strip() else []
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -67,6 +73,16 @@ def _build_parser() -> argparse.ArgumentParser:
         choices=THINKING_EFFORTS,
         metavar="NIVEL",
         help="Nivel de esfuerzo del reasoning (requiere --thinking)",
+    )
+    parser.add_argument(
+        "--flags",
+        type=str,
+        default="",
+        metavar="FLAGS",
+        help=(
+            "Flags extra antes del fichero fuente, como una cadena entre comillas "
+            '(p. ej. "-DPOLYBENCH_TIME utilities/polybench.c")'
+        ),
     )
     return parser
 
@@ -135,6 +151,7 @@ def main() -> None:
         sys.exit(1)
 
     thinking = args.thinking
+    extra_flags = parse_compile_flags(args.flags)
     translated_name = backend.translated_path(source_path).name
     print(f"\n\nTraduciendo {source_path.name} -> {translated_name}")
     print(f"  Backend:    {backend.name}")
@@ -144,6 +161,8 @@ def main() -> None:
         print(f"  Reasoning:  activado (esfuerzo: {effort})")
     else:
         print("  Reasoning:  desactivado")
+    if extra_flags:
+        print(f"  Flags comp.: {' '.join(extra_flags)}")
     print("\n")
 
     translate_file(
@@ -153,6 +172,7 @@ def main() -> None:
         model=model_id,
         thinking=thinking,
         thinking_effort=args.thinking_effort,
+        extra_flags=extra_flags,
     )
 
 

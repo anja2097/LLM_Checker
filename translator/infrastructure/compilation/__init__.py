@@ -15,14 +15,18 @@ def compile_file(
     backend: Backend,
     *,
     variant: Literal["translated", "serial"],
+    extra_flags: list[str] | None = None,
 ) -> tuple[bool, str]:
+    extra = extra_flags or []
     if variant == "serial":
-        return openmp.compile_openmp(source_path, serial=True)
+        return openmp.compile_openmp(source_path, serial=True, extra_flags=extra)
 
     dispatch = {
-        "openmp": lambda: openmp.compile_openmp(source_path, serial=False),
-        "kokkos": lambda: kokkos.compile_kokkos(source_path),
-        "mpi": lambda: mpi.compile_mpi(source_path),
+        "openmp": lambda: openmp.compile_openmp(
+            source_path, serial=False, extra_flags=extra,
+        ),
+        "kokkos": lambda: kokkos.compile_kokkos(source_path, extra_flags=extra),
+        "mpi": lambda: mpi.compile_mpi(source_path, extra_flags=extra),
     }
     compile_fn = dispatch.get(backend.slug)
     if compile_fn is None:

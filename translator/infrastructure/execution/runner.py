@@ -86,7 +86,12 @@ def _benchmark(
     return stdout, stderr, total / runs
 
 
-def verify_and_benchmark(original_path: Path, backend: Backend) -> None:
+def verify_and_benchmark(
+    original_path: Path,
+    backend: Backend,
+    *,
+    extra_flags: list[str] | None = None,
+) -> None:
     """Compila y ejecuta el original (serial) y la versión traducida."""
     translated_path = backend.translated_path(original_path)
     serial_exe = executable_path(original_path)
@@ -97,7 +102,9 @@ def verify_and_benchmark(original_path: Path, backend: Backend) -> None:
     print(f"{'=' * 50}")
 
     print("\n\n  Compilando versión serial…")
-    ok, err = compile_file(original_path, backend, variant="serial")
+    ok, err = compile_file(
+        original_path, backend, variant="serial", extra_flags=extra_flags,
+    )
     if not ok:
         print("[ERROR] No se pudo compilar el fichero original:")
         print(err)
